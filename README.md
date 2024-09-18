@@ -1,5 +1,8 @@
 # [Nome Bueno](http://akmal-nabil-nomebueno.pbp.cs.ui.ac.id)
+[Tugas 2](#tugas-2)  
+[Tugas 3](#tugas-3)  
 
+# TUGAS 2
 1. Langkah-langkah membuat project Django  
     - Membuat sebuah proyek Django baru  
         Untuk membuat sebuah proyek Django, kita menggunakan perintah `django-admin startproject nama_project .` di directory yang kita inginkan. Perintah tersebut, Django akan membuat direktori baru yang diberi nama sesuai `nama_project` yang berisi file-file yang dibutuhkan untuk membuat aplikasi web
@@ -36,3 +39,96 @@
 
 5. Django sebagai ORM  
     Model pada Django disebut sebagai ORM karena pada model django terdapat keterikatan antara **Relational Database** dan **Object-Oriented Programming**. ORM memungkinkan pengembang untuk berinteraksi dengan database menggunakan kelas dan metode Python. Bagi para pengembang, hal ini menghasilkan interaksi database yang lebih bersih, lebih mudah dikelola, dan lebih mudah dimengerti. 
+
+# TUGAS 3  
+1. Pentingnya Data Delivery  
+    Data delivery memungkinkan aplikasi web yang kita buat menampilkan konten dinamis. Aplikasi web dapat memuat data yang sesuai dengan interaksi pengguna. Pengguna akan mendapat informasi yang mereka butuhkan secara real-time saat mereka berinteraksi dengan aplikasi. Data delivery juga memungkinkan aplikasi pihak ketiga untuk mengambil dan mengirim data secara efisien  melalui JSON atau XML. Selain itu, Django juga memiliki fitur keamanan yang kuat seperti CSRF protection, XSS protection, dan pengelolaan sesi untuk memastikan keamanan data yang dikirim dan diterima.  
+
+2. XML dan JSON  
+    Secara umum, JSON lebih banyak dipakai dibanding XML karena JSON memiliki beberapa keunggulan sebagai berikut:  
+    - JSON memiliki struktur yang lebih sederhana dan mudah dibaca dibanding XML. JSON menggunakan kurung kurawal sedangkan XML menggunakan tag pembuka dan penutup. Hal ini juga menyebabkan JSON lebih efisien untuk diproses oleh server.   
+    - JSON lebih mudah diolah di JavaScript dibanding XML karena format JSON sangat mirip dengan JavaScript.  
+    - Kebanyakan framework modern banyak library yang bisa bekerja dengan JSON. Di sisi lain, dukungan XML dalam pengembangan web tidak sepopuler dulu, tetapi masih digunakan di beberapa aplikasi khusus.  
+
+3. Method `is_valid()`
+    Method `is_valid()` adalah method yang digunakan untuk memeriksa apakah data yang dikirimkan melalui form sudah sesuai dengan validasi yang ada pada form tersebut. Method tersebut sangat penting digunakan untuk mencegah adanya data yang tidak sesuai aturan validasi. Data yang tidak sesuai validasi bisa berbahaya jika dimasukkan ke dalam database karena bisa menimbulkan ancaman serangan seperti SQL Injection.  
+
+ 4. `csrf_token`  
+    `csrf_token` adalah nilai unik dan rahasia yang dbuat oleh server dan dibagikan ke client. Saat submit form, client harus menyertakan token CSRF pada request. Tanpa adanya `csrf_token`, web akan rentan terkena serangan CSRF. Serangan CSRF adalah sebuah serangan dimana user akan mengirimkan request mencurigakan ke web tanpa diketahui. Kemudian, user akan melakukan aksi secara tidak sengaja seperti mengubah email, mengubah password, atau melakukan transfer uang.  
+
+5. Implementasi checklist  
+    - Membuat input form  
+        Untuk membuat form, pertama kita harus membuat file `forms.py` di direktori main yang berisi struktur form yang menerima data Product.  
+        ```  
+        from django.forms import ModelForm
+        from main.models import Product
+
+        class ProductEntryForm(ModelForm):
+            class Meta:
+                model = Product
+                fields = ["name", "price", "description"]
+        ```  
+        Lalu, pada `views.py`, kita membuat fungsi baru `create_product_entry` untuk menampilkan form yang bisa menambahkan data Product.   
+        ```  
+        def create_product_entry(request):
+            form = ProductEntryForm(request.POST or None)
+
+            if form.is_valid() and request.method == 'POST':
+                form.save()
+                return redirect('main:show_main')
+            
+            context = {'form': form}
+            return render(request, 'create_product_entry.html', context)
+        ```  
+        Pada fungsi `show_main`, kita menambahkan data `product_entries` yang berisi semua objek Produk.
+        ``` 
+        def show_main(request):
+            product_entries = Product.objects.all()
+
+            context = {
+                'appname': 'Nome Bueno',
+                'name': 'Akmal Nabil Fikri',
+                'class': 'E',
+                'product_entries': product_entries,
+            }
+
+            return render(request, "main.html", context)
+        ```  
+        Fungsi `create_product_entry` di*route* ke `urls.py` main.  
+        ``` 
+        path('create-product-entry', create_product_entry, name='create_product_entry'),
+        ``` 
+        Pada direktori templates main, kita membuat file html baru yang berisi form untuk menambahkan produk.  
+
+    
+    - Membuat 4 fungsi baru yang menampilkan objek dalam format XML, JSON, XML by ID, JSON, by ID.
+        Untuk menambahkan 4 fungsi di atas, kita perlu import `HttpResponse` dan `Serializer` pada `views.py`. Lalu, kita menambahkan fungsi `show_xml`, `show_json`, `show_xml_by_id`, `show_json_by_id`. Bentuk keempat fungsi tersebut kurang lebih sama. Untuk `show_xml` dan `show_json`, data yang diambil adalah seluruh objek yang ada dari Produk. Sedangkan pada `show_xml_by_id` dan `show_json_by_id`, fungsi akan menerima parameter id dan data yang ditampilkan adalah objek Produk yang memiliki ID tersebut.  
+        ``` 
+        def show_xml(request):
+            data = Product.objects.all()
+            return HttpResponse(serializers.serialize('xml', data), content_type='application/xml')
+        ``` 
+        ``` 
+        def show_json(request):
+            data = Product.objects.all()
+            return HttpResponse(serializers.serialize('json', data), content_type='application/json')
+        ``` 
+        ``` 
+        def show_xml_by_id(request, id):
+            data = Product.objects.filter(pk=id)
+            return HttpResponse(serializers.serialize('xml', data), content_type='application/xml')
+        ``` 
+        ``` 
+        def show_json_by_id(request, id):
+            data = Product.objects.filter(pk=id)
+            return HttpResponse(serializers.serialize('json', data), content_type='application/json')
+        ``` 
+
+    - Routing masing-masing view 
+        Untuk melakukan routing, kita menambahkan url masing-masing view pada `urlpatterns` di `urls.py` pada main. 
+        ``` 
+        path('xml/', show_xml, name='show_xml'),
+        path('json/', show_json, name='show_json'),
+        path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
+        path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
+        ``` 
