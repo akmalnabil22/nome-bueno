@@ -133,17 +133,111 @@
         path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
         path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
         ``` 
-<<<<<<< HEAD
 
-# TUGAS 4 
-1. Perbedaan `HttpResponseRedirect()` dan `redirect()` 
-    `HttpResponseRedirect()` dan `redirect()` memiliki fungsi yang sama, yaitu mengalihkan pengguna ke url lain. Perbedaan kedua fungsi tersebut terletak pada parameter yang diterima. `HttpResponseRedirect()` hanya menerima absolute url sebagai parameter, sedangkan `redirect()` bisa menerima url, view name, atau object sebagai parameter lalu dikonversi menjadi url yang tepat.
-
-2. Cara kerja penghubungan `Product` dengan `User`
-    
-=======
 ![Screenshot (123)](https://github.com/user-attachments/assets/81cee5e7-0e5c-469a-8015-a62d876e4b2e)
 ![Screenshot (124)](https://github.com/user-attachments/assets/7c5d299b-9df6-4a84-a71e-37c40875a320)
 ![Screenshot (125)](https://github.com/user-attachments/assets/fa210eb3-429b-4017-b4e3-ab05aa54d561)
 ![Screenshot (126)](https://github.com/user-attachments/assets/1815700e-18ff-448e-bbad-a770c1d44f5e)
->>>>>>> 12d2cfba069137b7d2e112aa3f0bb9cdcdc1a45e
+
+
+
+# TUGAS 4 
+## Perbedaan `HttpResponseRedirect()` dan `redirect()` 
+    `HttpResponseRedirect()` dan `redirect()` memiliki fungsi yang sama, yaitu mengalihkan pengguna ke url lain. Perbedaan kedua fungsi tersebut terletak pada parameter yang diterima. `HttpResponseRedirect()` hanya menerima absolute url sebagai parameter, sedangkan `redirect()` bisa menerima url, view name, atau object sebagai parameter lalu dikonversi menjadi url yang tepat.
+
+## Cara menghubungkan `Product` dengan `User` 
+    Untuk menghubungkan `Product` dengan `User`, baris berikut pada model yang kita buat 
+    ```python 
+    class Product(models.Model):
+        user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ``` 
+    baris tersebut akan menghubungkan model `Product` dengan `User` yang sedang login melalui sebuah relasi. Foreign Key dari model akan merujuk ke sebuah entri `User`. Ketika sebuah objek User dihapus, maka semua model yang terikat ke User tersebut juga akan dihapus di database. 
+
+## Perbedaan authentication dan authorization 
+    Authentication adalah proses untuk memastikan pengguna ada di database, sedangkan authorization adalah memastikan hak akses pengguna yang sudah diotentikasi. Pada django, kita menggunakan fungsi `authenticate` untuk melakukan otentikasi pengguna yang login. Untuk melakukan authorization pada django, kita menambah decorator `login_required` dan menghubungkan setiap model dengan sebuah user. 
+
+## Cookies :cookie: 
+    Django mengingat pengguna yang login dengan menggunakan session ID dan cookies. Setiap pengguna yang login akan dibuatkan session ID yang disimpan di server dan cookies yang disimpan di client. Cookies juga digunakan untuk menyimpan preferensi pengguna, melacak aktivitas pengguna di situs web, dan otentikasi. Tidak semua cookies aman digunakan karena keamanan cookies bergantung pada bagaimana cookies dikelola. Jika cookies tidak diamankan dengan baik, maka akan rentan dengan ancamanan keamanan. 
+
+## Implementasi checklist 
+    - Implementasi fungsi registrasi, login, dan logout  
+    fungsi registrasi 
+    ``` python 
+    def register(request):
+        form = UserCreationForm()
+
+        if request.method == "POST":
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your account has been successfully created!')
+                return redirect('main:login')
+        context = {'form':form}
+        return render(request, 'register.html', context)
+    ``` 
+    fungsi login 
+    ``` python 
+    def login_user(request):
+        if request.method == 'POST':
+            form = AuthenticationForm(data=request.POST)
+
+            if form.is_valid():
+                user = form.get_user()
+                login(request, user)
+                response = HttpResponseRedirect(reverse("main:show_main"))
+                response.set_cookie('last_login', str(datetime.datetime.now()))
+                return response
+
+        else:
+            form = AuthenticationForm(request)
+        context = {'form': form}
+        return render(request, 'login.html', context)
+    ``` 
+    fungsi logout 
+    ```python 
+    def logout_user(request):
+        logout(request)
+        response = HttpResponseRedirect(reverse('main:login'))
+        response.delete_cookie('last_login')
+        return response
+    ``` 
+
+    - Membuat dua akun dengan tiga data 
+    Untuk membuat dua akun, maka perlu dilakukan registrasi dua akun berbeda. Lalu pada masing-masing akun, tambahkan tiga produk. 
+
+    - Menghubungkan model `Product` dengan `User` 
+    hubungkan `Product` ke `User` dengan menggunakan `ForeignKey` 
+    ```python 
+    class Product(models.Model):
+        user = models.ForeignKey(User, on_delete=models.CASCADE)
+    ``` 
+
+    - Menampilkan detail informasi pengguna yang sedang login 
+    Untuk menampilkan username pengguna yang sedang login, maka fungsi `show_main` perlu diubah 
+    ```python 
+    def show_main(request):
+        product_entries = Product.objects.filter(user=request.user)
+
+        context = {
+            'appname': 'Nome Bueno',
+            'name': request.user.username,
+            'class': 'E',
+            'product_entries': product_entries,
+            'last_login': request.COOKIES['last_login'],
+        }
+
+        return render(request, "main.html", context)
+    ``` 
+    Lalu, pada fungsi login, kita membuat cookie last_login dan menambahkannya ke response untuk menampilkan last login pada halaman utama 
+    ```python 
+    if form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        response = HttpResponseRedirect(reverse("main:show_main"))
+        response.set_cookie('last_login', str(datetime.datetime.now()))
+        return response 
+    ``` 
+    Tampilkan `last_login` di halaman main 
+    ``` 
+    <h5>Sesi terakhir login: {{ last_login }}</h5> 
+    ``` 
