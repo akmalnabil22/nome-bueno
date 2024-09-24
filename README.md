@@ -51,7 +51,7 @@
     - JSON lebih mudah diolah di JavaScript dibanding XML karena format JSON sangat mirip dengan JavaScript.  
     - Kebanyakan framework modern banyak library yang bisa bekerja dengan JSON. Di sisi lain, dukungan XML dalam pengembangan web tidak sepopuler dulu, tetapi masih digunakan di beberapa aplikasi khusus.  
 
-3. Method `is_valid()`
+3. Method `is_valid()`  
     Method `is_valid()` adalah method yang digunakan untuk memeriksa apakah data yang dikirimkan melalui form sudah sesuai dengan validasi yang ada pada form tersebut. Method tersebut sangat penting digunakan untuk mencegah adanya data yang tidak sesuai aturan validasi. Data yang tidak sesuai validasi bisa berbahaya jika dimasukkan ke dalam database karena bisa menimbulkan ancaman serangan seperti SQL Injection.  
 
  4. `csrf_token`  
@@ -142,10 +142,10 @@
 
 
 # TUGAS 4 
-1. Perbedaan `HttpResponseRedirect()` dan `redirect()` 
+1. Perbedaan `HttpResponseRedirect()` dan `redirect()`  
     `HttpResponseRedirect()` dan `redirect()` memiliki fungsi yang sama, yaitu mengalihkan pengguna ke url lain. Perbedaan kedua fungsi tersebut terletak pada parameter yang diterima. `HttpResponseRedirect()` hanya menerima absolute url sebagai parameter, sedangkan `redirect()` bisa menerima url, view name, atau object sebagai parameter lalu dikonversi menjadi url yang tepat.
 
-2. Cara menghubungkan `Product` dengan `User` 
+2. Cara menghubungkan `Product` dengan `User`  
     Untuk menghubungkan `Product` dengan `User`, baris berikut pada model yang kita buat 
     ```python 
     class Product(models.Model):
@@ -153,13 +153,13 @@
     ``` 
     baris tersebut akan menghubungkan model `Product` dengan `User` yang sedang login melalui sebuah relasi. Foreign Key dari model akan merujuk ke sebuah entri `User`. Ketika sebuah objek User dihapus, maka semua model yang terikat ke User tersebut juga akan dihapus di database. 
 
-3. Perbedaan authentication dan authorization 
+3. Perbedaan authentication dan authorization  
     Authentication adalah proses untuk memastikan pengguna ada di database, sedangkan authorization adalah memastikan hak akses pengguna yang sudah diotentikasi. Pada django, kita menggunakan fungsi `authenticate` untuk melakukan otentikasi pengguna yang login. Untuk melakukan authorization pada django, kita menambah decorator `login_required` dan menghubungkan setiap model dengan sebuah user. 
 
-4. Cookies :cookie: 
+4. Cookies :cookie:  
     Django mengingat pengguna yang login dengan menggunakan session ID dan cookies. Setiap pengguna yang login akan dibuatkan session ID yang disimpan di server dan cookies yang disimpan di client. Cookies juga digunakan untuk menyimpan preferensi pengguna, melacak aktivitas pengguna di situs web, dan otentikasi. Tidak semua cookies aman digunakan karena keamanan cookies bergantung pada bagaimana cookies dikelola. Jika cookies tidak diamankan dengan baik, maka akan rentan dengan ancamanan keamanan. 
 
-5. Implementasi checklist 
+5. Implementasi checklist  
     - Implementasi fungsi registrasi, login, dan logout  
     fungsi registrasi 
     ``` python 
