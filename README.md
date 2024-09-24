@@ -102,7 +102,7 @@
         Pada direktori templates main, kita membuat file html baru yang berisi form untuk menambahkan produk.  
 
     
-    - Membuat 4 fungsi baru yang menampilkan objek dalam format XML, JSON, XML by ID, JSON, by ID.
+    - Membuat 4 fungsi baru yang menampilkan objek dalam format XML, JSON, XML by ID, JSON, by ID.  
         Untuk menambahkan 4 fungsi di atas, kita perlu import `HttpResponse` dan `Serializer` pada `views.py`. Lalu, kita menambahkan fungsi `show_xml`, `show_json`, `show_xml_by_id`, `show_json_by_id`. Bentuk keempat fungsi tersebut kurang lebih sama. Untuk `show_xml` dan `show_json`, data yang diambil adalah seluruh objek yang ada dari Produk. Sedangkan pada `show_xml_by_id` dan `show_json_by_id`, fungsi akan menerima parameter id dan data yang ditampilkan adalah objek Produk yang memiliki ID tersebut.  
         ``` 
         def show_xml(request):
@@ -125,7 +125,7 @@
             return HttpResponse(serializers.serialize('json', data), content_type='application/json')
         ``` 
 
-    - Routing masing-masing view 
+    - Routing masing-masing view  
         Untuk melakukan routing, kita menambahkan url masing-masing view pada `urlpatterns` di `urls.py` pada main. 
         ``` 
         path('xml/', show_xml, name='show_xml'),
@@ -142,10 +142,10 @@
 
 
 # TUGAS 4 
-## Perbedaan `HttpResponseRedirect()` dan `redirect()` 
+1. Perbedaan `HttpResponseRedirect()` dan `redirect()` 
     `HttpResponseRedirect()` dan `redirect()` memiliki fungsi yang sama, yaitu mengalihkan pengguna ke url lain. Perbedaan kedua fungsi tersebut terletak pada parameter yang diterima. `HttpResponseRedirect()` hanya menerima absolute url sebagai parameter, sedangkan `redirect()` bisa menerima url, view name, atau object sebagai parameter lalu dikonversi menjadi url yang tepat.
 
-## Cara menghubungkan `Product` dengan `User` 
+2. Cara menghubungkan `Product` dengan `User` 
     Untuk menghubungkan `Product` dengan `User`, baris berikut pada model yang kita buat 
     ```python 
     class Product(models.Model):
@@ -153,13 +153,13 @@
     ``` 
     baris tersebut akan menghubungkan model `Product` dengan `User` yang sedang login melalui sebuah relasi. Foreign Key dari model akan merujuk ke sebuah entri `User`. Ketika sebuah objek User dihapus, maka semua model yang terikat ke User tersebut juga akan dihapus di database. 
 
-## Perbedaan authentication dan authorization 
+3. Perbedaan authentication dan authorization 
     Authentication adalah proses untuk memastikan pengguna ada di database, sedangkan authorization adalah memastikan hak akses pengguna yang sudah diotentikasi. Pada django, kita menggunakan fungsi `authenticate` untuk melakukan otentikasi pengguna yang login. Untuk melakukan authorization pada django, kita menambah decorator `login_required` dan menghubungkan setiap model dengan sebuah user. 
 
-## Cookies :cookie: 
+4. Cookies :cookie: 
     Django mengingat pengguna yang login dengan menggunakan session ID dan cookies. Setiap pengguna yang login akan dibuatkan session ID yang disimpan di server dan cookies yang disimpan di client. Cookies juga digunakan untuk menyimpan preferensi pengguna, melacak aktivitas pengguna di situs web, dan otentikasi. Tidak semua cookies aman digunakan karena keamanan cookies bergantung pada bagaimana cookies dikelola. Jika cookies tidak diamankan dengan baik, maka akan rentan dengan ancamanan keamanan. 
 
-## Implementasi checklist 
+5. Implementasi checklist 
     - Implementasi fungsi registrasi, login, dan logout  
     fungsi registrasi 
     ``` python 
@@ -202,17 +202,17 @@
         return response
     ``` 
 
-    - Membuat dua akun dengan tiga data 
+    - Membuat dua akun dengan tiga data  
     Untuk membuat dua akun, maka perlu dilakukan registrasi dua akun berbeda. Lalu pada masing-masing akun, tambahkan tiga produk. 
 
-    - Menghubungkan model `Product` dengan `User` 
+    - Menghubungkan model `Product` dengan `User`  
     hubungkan `Product` ke `User` dengan menggunakan `ForeignKey` 
     ```python 
     class Product(models.Model):
         user = models.ForeignKey(User, on_delete=models.CASCADE)
     ``` 
 
-    - Menampilkan detail informasi pengguna yang sedang login 
+    - Menampilkan detail informasi pengguna yang sedang login  
     Untuk menampilkan username pengguna yang sedang login, maka fungsi `show_main` perlu diubah 
     ```python 
     def show_main(request):
