@@ -1,6 +1,7 @@
 # [Nome Bueno](http://akmal-nabil-nomebueno.pbp.cs.ui.ac.id)
 [Tugas 2](#tugas-2)  
 [Tugas 3](#tugas-3)  
+[Tugas 4](#tugas-4)
 
 # TUGAS 2
 1. Langkah-langkah membuat project Django  
@@ -132,3 +133,10 @@
         path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
         path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
         ``` 
+
+# TUGAS 4 
+1. Perbedaan `HttpResponseRedirect()` dan `redirect()` 
+    `HttpResponseRedirect()` dan `redirect()` memiliki fungsi yang sama, yaitu mengalihkan pengguna ke url lain. Perbedaan kedua fungsi tersebut terletak pada parameter yang diterima. `HttpResponseRedirect()` hanya menerima absolute url sebagai parameter, sedangkan `redirect()` bisa menerima url, view name, atau object sebagai parameter lalu dikonversi menjadi url yang tepat.
+
+2. Cara kerja penghubungan `Product` dengan `User`
+    
