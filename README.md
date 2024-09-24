@@ -133,6 +133,7 @@
         path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
         path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
         ``` 
+<<<<<<< HEAD
 
 # TUGAS 4 
 1. Perbedaan `HttpResponseRedirect()` dan `redirect()` 
@@ -140,3 +141,9 @@
 
 2. Cara kerja penghubungan `Product` dengan `User`
     
+=======
+![Screenshot (123)](https://github.com/user-attachments/assets/81cee5e7-0e5c-469a-8015-a62d876e4b2e)
+![Screenshot (124)](https://github.com/user-attachments/assets/7c5d299b-9df6-4a84-a71e-37c40875a320)
+![Screenshot (125)](https://github.com/user-attachments/assets/fa210eb3-429b-4017-b4e3-ab05aa54d561)
+![Screenshot (126)](https://github.com/user-attachments/assets/1815700e-18ff-448e-bbad-a770c1d44f5e)
+>>>>>>> 12d2cfba069137b7d2e112aa3f0bb9cdcdc1a45e
