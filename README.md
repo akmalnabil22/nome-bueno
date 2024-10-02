@@ -1,7 +1,8 @@
 # [Nome Bueno](http://akmal-nabil-nomebueno.pbp.cs.ui.ac.id)
 [Tugas 2](#tugas-2)  
 [Tugas 3](#tugas-3)  
-[Tugas 4](#tugas-4)
+[Tugas 4](#tugas-4)  
+[Tugas 5](#tugas-5)
 
 # TUGAS 2
 1. Langkah-langkah membuat project Django  
@@ -12,7 +13,7 @@
         Di dalam direktori proyek, jalankan perintah `python manage.py startapp main`. Perintah tersebut membuat direktori baru bernama `main` yang berisi file-file yang digunakan untuk mengatur fungsi dari aplikasi yang kita buat.
 
     - Melakukan routing pada proyek agar dapat menjalankan aplikasi `main`  
-        Agar bisa melakukan routing, kita harus membuat file `urls.py` di dalam main. Di file ini, kita mendefinisikan pola URL dari aplikasi main di proyek kita. Lalu, kita menambahkan URL main ke dalam URL proyek melalui `urls.py` yang ada di direktori proyek
+        Agar bisa melakukan routing, kita harus membuat file `urls.py` di dalam main. Dis file ini, kita mendefinisikan pola URL dari aplikasi main di proyek kita. Lalu, kita menambahkan URL main ke dalam URL proyek melalui `urls.py` yang ada di direktori proyek
 
     - Membuat model pada aplikasi `main` dengan nama `Product` dan memiliki atribut `name`, `price`, `description`  
         Pada direktori main, terdapat file modes.py. Di file tersebut, kita bisa menambahkan class `Product` dengan atribut `name`, `price`, `description`. Kita juga memasukkan `model.Models` sebagai parameter `Product` untuk mendefinisikan class tersebut sebagai model Django
@@ -240,4 +241,98 @@
     Tampilkan `last_login` di halaman main 
     ``` 
     <h5>Sesi terakhir login: {{ last_login }}</h5> 
-    ``` 
+    ```  
+
+# Tugas 5  
+1. Urutan pengambilan CSS Selector
+    1. ID selector, memilih elemen berdasarkan ID  
+    2. Class selector, memilih elemen berdasarkan class  
+    3. Element selector, memilih elemen berdasarkan tag  
+
+2. Pentingnya Responsive design  
+    Responsive design memastikan aplikasi web bisa menyesuaikan dengan ukuran layar pengguna. Tanpa adanya responsive design, pengguna bisa kesulitan membaca dan berinteraksi dengan aplikasi. Dengan adanya responsive design, *user experience* bisa meningkat.  
+    Contoh aplikasi yang sudah menerapkan responsive design: SCELE, Github  
+    Contoh aplikasi yang belum menerapkan responsive design: SIAK-NG  
+
+3. Perbedaan `margin`, `border`, `padding`  
+    - `margin` adalah ruang kosong di luar elemen  
+    ```html
+    <div style="margin: 20px;">Ini adalah elemen dengan margin 20px di semua sisi.</div> 
+    ```
+    - `border` adalah garis yang mengelilingi elemen  
+    ```html
+    <div style="border: 2px solid black;">Ini adalah elemen dengan border hitam 2px.</div>
+    ```
+    - `padding` adalah ruang kosong di dalam elemen (di antara border dan konten elemen)  
+    ```html
+    <div style="padding: 10px;">Ini adalah elemen dengan padding 10px di dalamnya.</div>
+    ```
+
+4. *Flex box* dan *grid layout*  
+    - *Flex box* adalah tata letak satu dimensi, baik horizontal maupun vertikal, yang memudahkan pembuatan tata letak responsif dan fleksibel. *Flexbox* cocok untuk tata letak satu dimensi seperti bar navigasi, menu, dan daftar item  
+    - *Grid layout* adalah tata letak dua dimensi yang terdiri dari baris dan kolom. *Grid* cocok digunakan untuk layout kolom dan baris yang rumit seperti kartu produk e-commerce  
+
+5. Implementasi Checklist  
+    - fungsi edit dan hapus product  
+    ```python
+    def edit_product(request, id):
+        product = Product.objects.get(pk = id)
+
+        form = ProductEntryForm(request.POST or None, instance=product)
+
+        if form.is_valid() and request.method == "POST":
+            form.save()
+            return HttpResponseRedirect(reverse('main:show_main'))
+
+        context = {'form': form}
+        return render(request, "edit_product.html", context)
+    
+    def delete_product(request, id):
+    
+        product = Product.objects.get(pk = id)
+        
+        product.delete()
+        
+        return HttpResponseRedirect(reverse('main:show_main'))
+    ```  
+    - kustomisasi halaman login, register, dan tambah product  
+    [Halaman login](./main/templates/login.html)  
+    [Halaman register](./main/templates/register.html)  
+    [Halaman tambah product](./main/templates/create_product_entry.html)  
+    - Kustomisasi halaman daftar product  
+        Jika product kosong  
+        ```html
+        {% if not product_entries %}
+        <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+            <img src="{% static 'image/pinched-fingers.png' %}" alt="Pinched Finges Emoji" class="w-32 h-32 mb-4"/>
+            <p class="text-center text-gray-600 mt-4">Belum ada data product pada Nome Bueno.</p>
+        </div>
+        ```  
+        Jika product ada  
+        ```html
+        {% else %}
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6 w-full">
+            {% for product_entry in product_entries %}
+                {% include 'card_product.html' with product_entry=product_entry %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        ```
+        [Card product](./main/templates/card_product.html)  
+    - Button edit dan delete pada card product  
+     ```h
+    <div class="absolute top-0 -right-4 flex space-x-1">
+        <a href="{% url 'main:edit_product' product_entry.pk %}" class="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+            </svg>
+        </a>
+        <a href="{% url 'main:delete_product' product_entry.pk %}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+        </a>
+    </div>
+    ```
+    - [Implementasi navbar](./templates/navbar.html)  
+    
