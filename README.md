@@ -479,28 +479,28 @@
         path('create-product-entry-ajax/', add_product_entry_ajax, name="add_product_entry_ajax"),
         ```
     - Menghubungkan form modal dengan path yang baru dibuat  
-    ```js
-    function addProductEntry() {
-        fetch("{% url 'main:add_product_entry_ajax' %}", {
-            method: "POST",
-            body: new FormData(document.querySelector('#productEntryForm')),
-        })
-        .then(response => {
-            if (response.ok) {
-            refreshProductEntries();
-            hideModal();  
-            document.getElementById("productEntryForm").reset();  
-            } else {
-            console.error('Error adding product entry:', response.statusText);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        ```js
+        function addProductEntry() {
+            fetch("{% url 'main:add_product_entry_ajax' %}", {
+                method: "POST",
+                body: new FormData(document.querySelector('#productEntryForm')),
+            })
+            .then(response => {
+                if (response.ok) {
+                refreshProductEntries();
+                hideModal();  
+                document.getElementById("productEntryForm").reset();  
+                } else {
+                console.error('Error adding product entry:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
-        return false;
-        }
-    ```
+            return false;
+            }
+        ```
     - Refresh pada halaman utama secara asinkronus untuk menampilkan data baru  
         panggil fungsi refresh yang telah dibuat  
         ```js
