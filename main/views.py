@@ -133,14 +133,14 @@ def create_product_flutter(request):
     if request.method == 'POST':
 
         data = json.loads(request.body)
-        new_mood = Product.objects.create(
+        new_product = Product.objects.create(
             user=request.user,
-            mood=data["name"],
-            mood_intensity=int(data["price"]),
-            feelings=data["description"]
+            name=data["name"],
+            price=int(data["price"]),
+            description=data["description"]
         )
 
-        new_mood.save()
+        new_product.save()
 
         return JsonResponse({"status": "success"}, status=200)
     else:
